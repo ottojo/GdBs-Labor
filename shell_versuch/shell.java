@@ -25,8 +25,6 @@ class shell {
 
             // Wait for all child processes
             for (int pid : pidsForCommand) {
-                // TODO: only the first process ever returns, rest is "interruptible sleep (waiting for an event to complete)"
-
                 waitpid(-1, new int[2], 0);
             }
         }
@@ -90,13 +88,16 @@ class shell {
             // Is child
 
             // Use specified stdin
-            dup2(STDIN_FILENO, stdin);
+            dup2(stdin, STDIN_FILENO);
 
             setFileIO(cmdLine);
 
             if (redirectToPipe) {
-                // Set stdout into pipe
-                dup2(STDOUT_FILENO, p[1]);
+                // We only want to write to the pipe, close the reading end.
+                close(p[0]);
+
+                // Replace stdout with write end of pipe
+                dup2(p[1], STDOUT_FILENO);
             }
 
             // Replace this process
@@ -110,8 +111,10 @@ class shell {
 
             pids.add(forkPid);
 
-            // If we had a pipe, execute the rest.
+            // If we had a pipe following this command, execute the rest.
             if (redirectToPipe) {
+                // We dont need the write end of the pipe.
+                close(p[1]);
                 pids.addAll(executeAndGetPIDs(remainingAfterPipe, p[0]));
             }
         }
