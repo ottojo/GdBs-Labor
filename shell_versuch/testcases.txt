@@ -1,0 +1,3 @@
+/usr/bin/du -sm * | /usr/bin/grep '^[0-9]\{4,\}' | /usr/bin/sort -n > xxx
+
+/usr/bin/dmesg | /usr/bin/grep ACPI | /usr/bin/grep -i bug > bugs.txt

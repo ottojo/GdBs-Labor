@@ -88,7 +88,10 @@ class shell {
             // Is child
 
             // Use specified stdin
-            dup2(stdin, STDIN_FILENO);
+            if (stdin != STDIN_FILENO) {
+                dup2(stdin, STDIN_FILENO);
+                close(stdin);
+            }
 
             setFileIO(cmdLine);
 
@@ -98,6 +101,7 @@ class shell {
 
                 // Replace stdout with write end of pipe
                 dup2(p[1], STDOUT_FILENO);
+                close(p[1]);
             }
 
             // Replace this process
