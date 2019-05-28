@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static cTools.KernelWrapper.*;
 
@@ -180,7 +179,7 @@ class shell {
 
     private static List<String> expand(String input) {
         String globAsRegex = input.replace("*", ".*").replace("?", ".");
-        File[] fileList = new File(".").listFiles(pathname -> pathname.getName().matches(globAsRegex));
-        return Arrays.stream(Objects.requireNonNull(fileList)).map(File::getName).collect(Collectors.toList());
+        String[] fileList = new File(".").list((__, pathname) -> pathname.matches(globAsRegex));
+        return Arrays.asList(fileList);
     }
 }
