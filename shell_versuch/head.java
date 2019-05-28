@@ -67,17 +67,22 @@ public class head {
             do {
                 lastReadCount = read(fd, buffer, bufferSize);
 
+                byte[] outputBuffer = new byte[bufferSize];
+                int outputBufferSize = 0;
+
                 // Condition: Stay in buffer, stay in line limit or byte limit (use c to decide whitch)
                 for (int i = 0; i < lastReadCount && (c > 0 ? byteCounter < c : lineCounter < n); i++) {
                     if (buffer[i] == '\n') {
                         lineCounter++;
                     }
 
-                    // TODO buffer?
-                    write(STDOUT_FILENO, new byte[]{buffer[i]}, 1);
+                    outputBuffer[i] = buffer[i];
+                    outputBufferSize++;
+
                     byteCounter++;
                 }
 
+                write(STDOUT_FILENO, outputBuffer, outputBufferSize);
 
                 // Stop condition: all lines printed or EOF encountered
             } while (lineCounter < n && lastReadCount != 0);
