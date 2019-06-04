@@ -7,17 +7,13 @@ import static cTools.KernelWrapper.*;
 
 public class head {
     public static void main(String[] args) {
-
-
         int n = 10;
         int c = -1;
 
         List<String> argList = new LinkedList<>(Arrays.asList(args));
-
         ListIterator<String> it = argList.listIterator();
         try {
             while (it.hasNext()) {
-                // TODO: ignore invalid flags?
                 switch (it.next()) {
                     case "-c":
                         it.remove();
@@ -88,7 +84,6 @@ public class head {
             } while (lineCounter < n && lastReadCount != 0);
 
             if (c > 0) {
-                // TODO decide if we should do this
                 // If writing by byte count, add newline before printing next file
                 write(STDOUT_FILENO, new byte[]{'\n'}, 1);
             }
